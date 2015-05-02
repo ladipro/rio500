@@ -1,0 +1,17 @@
+#include <windows.h>
+
+#include <ntverp.h>
+
+#define VER_FILETYPE                VFT_DRV
+#define VER_FILESUBTYPE             VFT2_DRV_SYSTEM
+#define VER_FILEDESCRIPTION_STR     "Rio 500 USB driver"
+#define VER_INTERNALNAME_STR        "rio500.sys"
+#define VER_ORIGINALFILENAME_STR    "rio500.sys"
+
+#undef VER_PRODUCTVERSION
+#undef VER_PRODUCTVERSION_STR
+
+#define VER_PRODUCTVERSION 1,00,00,000
+#define VER_PRODUCTVERSION_STR "1.00"
+
+#include "common.ver"

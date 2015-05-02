@@ -1,0 +1,113 @@
+;/*++
+;
+;Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;   THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
+;   KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+;   IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
+;   PURPOSE.
+;
+;Module Name:
+;
+;    rio500.inf
+;
+;Abstract:
+;    Installation inf for the Rio 500 USB device
+;
+;--*/
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=USBDevice
+ClassGuid={88BAE032-5A81-49f0-BC3D-A4FF138216D6}
+Provider=%ProviderName%
+DriverVer=04/28/2015,1.00.0000
+CatalogFile=rio500.cat
+
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=USBClassReg     
+
+[USBClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+; ================= Device section =====================
+
+[Manufacturer]
+%MfgName%=Microsoft,NT$ARCH$
+
+; For Win2K
+[Microsoft]
+%USB\VID_0841&PID_0001.DeviceDesc%=rio500.Dev, USB\VID_0841&PID_0001
+
+; For XP and later
+[Microsoft.NT$ARCH$]
+%USB\VID_0841&PID_0001.DeviceDesc%=rio500.Dev, USB\VID_0841&PID_0001
+
+
+[rio500.Dev.NT]
+CopyFiles=rio500.Files.Ext
+
+[rio500.Dev.NT.Services]
+Addservice = rio500, 0x00000002, rio500.AddService
+
+[rio500.AddService]
+DisplayName    = %rio500.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\rio500.sys
+AddReg         = rio500.AddReg
+LoadOrderGroup = Base
+
+[rio500.AddReg]
+HKR,"Parameters","MaximumTransferSize",0x10001,65536
+HKR,"Parameters","DebugLevel",0x10001,2
+
+[rio500.Files.Ext]
+rio500.sys
+
+[SourceDisksNames]
+1=%Disk_Description%,,,
+
+[SourceDisksFiles]
+rio500.sys = 1
+
+;-------------- WDF Coinstaller installation
+[DestinationDirs]
+CoInstaller_CopyFiles = 11
+
+[rio500.Dev.NT.CoInstallers]
+AddReg=CoInstaller_AddReg
+CopyFiles=CoInstaller_CopyFiles
+
+[CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[SourceDisksFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+[CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[rio500.Dev.NT.Wdf]
+KmdfService = rio500, rio500_wdfsect
+
+[rio500_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+;---------------------------------------------------------------;
+
+[Strings]
+ProviderName    = "Ladi Prosek"
+MfgName         = "Rio"
+Disk_Description= "Rio 500 USB Driver Installation Disk"
+rio500.SvcDesc  = "WDF Driver for Rio 500 USB"
+ClassName       = "USB Device"
+USB\VID_0841&PID_0001.DeviceDesc="Rio 500 USB"
