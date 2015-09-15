@@ -21,7 +21,7 @@
 #include "Utils.h"
 #include "Guid.h"
 #include "fvcommands.h"
-#include "WorkerThread.h"
+#include "WorkerWindow.h"
 
 const int g_nMaxLevel = 5;
 

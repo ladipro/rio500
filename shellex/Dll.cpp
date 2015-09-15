@@ -22,7 +22,7 @@
 
 // The GUID for the FolderViewImpl
 #include "GUID.h"
-#include "WorkerThread.h"
+#include "WorkerWindow.h"
 
 #pragma comment(lib, "propsys.lib")
 #pragma comment(lib, "shlwapi.lib")
@@ -62,7 +62,7 @@ STDAPI_(BOOL) DllMain(HINSTANCE hInstance, DWORD dwReason, void *)
     }
     else if (dwReason == DLL_PROCESS_DETACH)
     {
-        StopWorkerThread(TRUE);
+        DestroyWorkerWindow(TRUE);
     }
     return TRUE;
 }
@@ -105,8 +105,8 @@ public:
             }
         }
 
-        // create the worker thread on first object instantiation
-        StartWorkerThread();
+        // create worker window on first object instantiation
+        CreateWorkerWindow();
         return hr;
     }
 
@@ -218,12 +218,11 @@ STDAPI DllRegisterServer()
     // Get the path and module name.
     WCHAR szModulePathAndName[MAX_PATH];
     GetModuleFileName(g_hInst, szModulePathAndName, ARRAYSIZE(szModulePathAndName));
-    PWSTR pwzLastDot = StrRChr(szModulePathAndName, NULL, L'.');
-    if (!pwzLastDot)
-      return E_FAIL;
-    *pwzLastDot = 0;
-    StrCat(szModulePathAndName, L"Stub.dll");
 
+    WCHAR szDefaultIcon[MAX_PATH];
+    StrCpy(szDefaultIcon, szModulePathAndName);
+    StrCat(szDefaultIcon, L",-14");
+    
     // two CLSID in registry path - doesn't quite fit the table below
     WCHAR szRootContextMenuHandlers[MAX_PATH];
     StringCchPrintf(
@@ -242,7 +241,7 @@ STDAPI DllRegisterServer()
         HKEY_CURRENT_USER,   L"Software\\Classes\\CLSID\\%s",                  szFolderViewImplClassID, L"System.ItemTypeText", (LPBYTE)L"Digital audio player", REG_SZ,
         HKEY_CURRENT_USER,   L"Software\\Classes\\CLSID\\%s\\InprocServer32",  szFolderViewImplClassID, NULL,                   (LPBYTE)L"%s",                   REG_SZ,
         HKEY_CURRENT_USER,   L"Software\\Classes\\CLSID\\%s\\InprocServer32",  szFolderViewImplClassID, L"ThreadingModel",      (LPBYTE)L"Apartment",            REG_SZ,
-        HKEY_CURRENT_USER,   L"Software\\Classes\\CLSID\\%s\\DefaultIcon",     szFolderViewImplClassID, NULL,                   (LPBYTE)L"C:\\Users\\ladipro\\Desktop\\Rio500\\ShellEx\\RioShellEx\\x64\\Debug\\RioShellEx.dll,-145"/*L"shell32.dll,-42"*/, REG_SZ,
+        HKEY_CURRENT_USER,   L"Software\\Classes\\CLSID\\%s\\DefaultIcon",     szFolderViewImplClassID, NULL,                   (LPBYTE)szDefaultIcon,           REG_SZ,
         HKEY_CURRENT_USER,   L"Software\\Classes\\CLSID\\%s\\ShellFolder",     szFolderViewImplClassID, L"Attributes",          (LPBYTE)&dwData,                 REG_DWORD,
         HKEY_CURRENT_USER,   L"Software\\Classes\\CLSID\\%s\\ShellFolder",     szFolderViewImplClassID, L"QueryForOverlay",     (LPBYTE)L"",                     REG_SZ,
         HKEY_CURRENT_USER,   L"Software\\Classes\\CLSID\\%s\\ShellFolder",     szFolderViewImplClassID, L"CallForAttributes",   (LPBYTE)L"",                     REG_SZ,

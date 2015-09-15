@@ -6,7 +6,7 @@
 
 namespace Rio500Remix
 {
-#include "..\\..\\Rio500Remix\\Rio500Remix.h"
+#include "..\\..\\..\\Rio500Remix\\Rio500Remix.h"
 }
 
 #define WM_FORMAT_DEVICE (WM_USER + 0)
@@ -14,7 +14,6 @@ namespace Rio500Remix
 extern bool g_bRioConnected;
 extern Rio500Remix::IRio500 *g_pRio;
 
-void StartWorkerThread();
-STDAPI StopWorkerThread(BOOL bHard);
-DWORD WINAPI WorkerThreadFunction(LPVOID lpParameter);
-void PostWorkerThreadMessage(UINT Msg, WPARAM wParam, LPARAM lParam);
+void CreateWorkerWindow();
+STDAPI DestroyWorkerWindow(BOOL bHard);
+void PostWorkerWindowMessage(UINT Msg, WPARAM wParam, LPARAM lParam);

@@ -20,8 +20,6 @@ HRESULT DisplayItem(IShellItemArray *psia, HWND hwndParent);
 #define ResultFromShort(i)      MAKE_HRESULT(SEVERITY_SUCCESS, 0, (USHORT)(i))
 #endif
 
-__inline HRESULT ResultFromKnownLastError() { const DWORD err = GetLastError(); return err == ERROR_SUCCESS ? E_FAIL : HRESULT_FROM_WIN32(err); }
-
 extern HINSTANCE g_hInst;
 
 void DllAddRef();

@@ -12,7 +12,7 @@
 #include <shlwapi.h>
 #include "utils.h"
 #include "resource.h"
-#include "WorkerThread.h"
+#include "WorkerWindow.h"
 #include <thread>
 #include <new>  // std::nothrow
 #define MENUVERB_FORMAT     0
@@ -210,17 +210,16 @@ HRESULT _MapICIVerbToCmdID(LPCMINVOKECOMMANDINFO pici, const ICIVERBTOIDMAP* pma
 
 INT_PTR CALLBACK FormattingDialogProc(HWND hwndDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-  if (message == WM_INITDIALOG)
-  {
-    PostWorkerThreadMessage(WM_FORMAT_DEVICE, 0, (LPARAM)hwndDlg);
-    //SetTimer(hwndDlg, 1, 2000, NULL);
-    SendMessage(GetWindow(hwndDlg, GW_CHILD), PBM_SETMARQUEE, 1, NULL);
-  }
-  if (message == WM_CLOSE)
-  {
-    EndDialog(hwndDlg, 0);
-  }
-  return DefWindowProc(hwndDlg, message, wParam, lParam);
+    if (message == WM_INITDIALOG)
+    {
+        PostWorkerWindowMessage(WM_FORMAT_DEVICE, 0, (LPARAM)hwndDlg);
+        SendMessage(GetWindow(hwndDlg, GW_CHILD), PBM_SETMARQUEE, 1, NULL);
+    }
+    if (message == WM_CLOSE)
+    {
+        EndDialog(hwndDlg, 0);
+    }
+    return DefWindowProc(hwndDlg, message, wParam, lParam);
 }
 
 HRESULT CFolderViewImplContextMenu::InvokeCommand(LPCMINVOKECOMMANDINFO pici)
