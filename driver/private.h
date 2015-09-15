@@ -180,11 +180,11 @@ Rio500_ValidateConfigurationDescriptor(
 );
 
 typedef struct _RIO_IOCTL_BLOCK {
-	BYTE RequestType;
-	BYTE RequestCode;
-	WORD MsgValue;
-	WORD MsgIndex;
-	WORD MsgLength;
+  BYTE RequestType;
+  BYTE RequestCode;
+  WORD MsgValue;
+  WORD MsgIndex;
+  WORD MsgLength;
   union {
     PVOID Data;      // data ptr in 64-bit process
 #ifdef _WIN64

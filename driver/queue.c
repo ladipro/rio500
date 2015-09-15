@@ -75,7 +75,6 @@ Return Value:
   WdfRequestComplete(Request, status);
 
   Rio500_DbgPrint(3, ("EvtDeviceFileCreate - ends\n"));
-  return;
 }
 
 VOID
@@ -114,13 +113,13 @@ Return Value:
 {
   WDFDEVICE             device;
   PVOID                 ioBuffer;
-	PRIO_IOCTL_BLOCK      ioBufferRio;
-	size_t                bufLength;
+  PRIO_IOCTL_BLOCK      ioBufferRio;
+  size_t                bufLength;
   NTSTATUS              status;
   PDEVICE_CONTEXT       pDevContext;
   ULONG                 length = 0;
-	URB                   urb;
-	PMDL                  pMdl = NULL;
+  URB                   urb;
+  PMDL                  pMdl = NULL;
   WDF_MEMORY_DESCRIPTOR memoryDesc;
 #ifdef _WIN64
   BOOLEAN               isWowRequest = FALSE;
@@ -178,12 +177,12 @@ Return Value:
       {
         bufLength = sizeof(RIO_IOCTL_BLOCK);
       }
-	    status = WdfRequestRetrieveInputBuffer(
-		    Request,
-		    bufLength,
-		    &ioBufferRio,
-		    NULL
-	    );
+      status = WdfRequestRetrieveInputBuffer(
+        Request,
+        bufLength,
+        &ioBufferRio,
+        NULL
+      );
 
       if (NT_SUCCESS(status)) {
 #ifdef _WIN64
@@ -194,51 +193,51 @@ Return Value:
         {
           ioBuffer = ioBufferRio->MsgData.Data;
         }
-		    if (ioBufferRio->MsgLength != 0 && ioBuffer != NULL) {
-			    pMdl = IoAllocateMdl(
+        if (ioBufferRio->MsgLength != 0 && ioBuffer != NULL) {
+          pMdl = IoAllocateMdl(
             ioBuffer,
             ioBufferRio->MsgLength,
             FALSE,
             FALSE,
             NULL
           );
-			    MmProbeAndLockPages(pMdl, (KPROCESSOR_MODE)KernelMode, IoModifyAccess);
-		    }
+          MmProbeAndLockPages(pMdl, (KPROCESSOR_MODE)KernelMode, IoModifyAccess);
+        }
 
-		    memset(&urb, 0, sizeof(urb));
-		    urb.UrbControlVendorClassRequest.Hdr.Length = sizeof(struct _URB_CONTROL_VENDOR_OR_CLASS_REQUEST);
-		    urb.UrbControlVendorClassRequest.Hdr.Function = URB_FUNCTION_VENDOR_DEVICE;
-		    urb.UrbControlVendorClassRequest.TransferBuffer = NULL;
-		    urb.UrbControlVendorClassRequest.RequestTypeReservedBits = 0x00;
-		    urb.UrbControlVendorClassRequest.TransferBufferLength = ioBufferRio->MsgLength;
-		    urb.UrbControlVendorClassRequest.TransferBufferMDL = pMdl;
-		    urb.UrbControlVendorClassRequest.Request = ioBufferRio->RequestCode;
-		    urb.UrbControlVendorClassRequest.Value = ioBufferRio->MsgValue;
-		    urb.UrbControlVendorClassRequest.Index = ioBufferRio->MsgIndex;
-		    urb.UrbControlVendorClassRequest.TransferFlags = USBD_SHORT_TRANSFER_OK;
-		    if (ioBufferRio->RequestType & 0x80) {
-			    urb.UrbControlVendorClassRequest.TransferFlags |= USBD_TRANSFER_DIRECTION_IN;
-		    }
-		    urb.UrbControlVendorClassRequest.UrbLink = NULL;
-			
-		    WDF_MEMORY_DESCRIPTOR_INIT_BUFFER(&memoryDesc, &urb, sizeof(urb));
-		    status = WdfIoTargetSendInternalIoctlOthersSynchronously(
-			    WdfDeviceGetIoTarget(device),
-			    Request,
-			    IOCTL_INTERNAL_USB_SUBMIT_URB,
-			    &memoryDesc,
-			    NULL,
-			    NULL,
-			    NULL,
-			    NULL
-		    );
+        memset(&urb, 0, sizeof(urb));
+        urb.UrbControlVendorClassRequest.Hdr.Length = sizeof(struct _URB_CONTROL_VENDOR_OR_CLASS_REQUEST);
+        urb.UrbControlVendorClassRequest.Hdr.Function = URB_FUNCTION_VENDOR_DEVICE;
+        urb.UrbControlVendorClassRequest.TransferBuffer = NULL;
+        urb.UrbControlVendorClassRequest.RequestTypeReservedBits = 0x00;
+        urb.UrbControlVendorClassRequest.TransferBufferLength = ioBufferRio->MsgLength;
+        urb.UrbControlVendorClassRequest.TransferBufferMDL = pMdl;
+        urb.UrbControlVendorClassRequest.Request = ioBufferRio->RequestCode;
+        urb.UrbControlVendorClassRequest.Value = ioBufferRio->MsgValue;
+        urb.UrbControlVendorClassRequest.Index = ioBufferRio->MsgIndex;
+        urb.UrbControlVendorClassRequest.TransferFlags = USBD_SHORT_TRANSFER_OK;
+        if (ioBufferRio->RequestType & 0x80) {
+          urb.UrbControlVendorClassRequest.TransferFlags |= USBD_TRANSFER_DIRECTION_IN;
+        }
+        urb.UrbControlVendorClassRequest.UrbLink = NULL;
+      
+        WDF_MEMORY_DESCRIPTOR_INIT_BUFFER(&memoryDesc, &urb, sizeof(urb));
+        status = WdfIoTargetSendInternalIoctlOthersSynchronously(
+          WdfDeviceGetIoTarget(device),
+          Request,
+          IOCTL_INTERNAL_USB_SUBMIT_URB,
+          &memoryDesc,
+          NULL,
+          NULL,
+          NULL,
+          NULL
+        );
 
-		    if (pMdl != NULL) {
-			    MmUnlockPages(pMdl);
-			    IoFreeMdl(pMdl);
-		    }
-	    }
-	    break;
+        if (pMdl != NULL) {
+          MmUnlockPages(pMdl);
+          IoFreeMdl(pMdl);
+        }
+      }
+      break;
 
     default:
       status = STATUS_INVALID_DEVICE_REQUEST;
@@ -248,7 +247,6 @@ Return Value:
   WdfRequestCompleteWithInformation(Request, status, length);
 
   Rio500_DbgPrint(3, ("Exit Rio500_DispatchDevCtrl\n"));
-  return;
 }
 
 VOID
@@ -306,7 +304,6 @@ Return Value:
 
   Rio500_DbgPrint(1, ("ISO transfer is not supported for buffered I/O transfer\n"));
   WdfRequestCompleteWithInformation(Request, STATUS_INVALID_DEVICE_REQUEST, 0);
-  return;
 }
 
 VOID
@@ -364,7 +361,6 @@ Return Value:
 
   Rio500_DbgPrint(1, ("ISO transfer is not supported for buffered I/O transfer\n"));
   WdfRequestCompleteWithInformation(Request, STATUS_INVALID_DEVICE_REQUEST, 0);
-  return;
 }
 
 VOID
@@ -393,15 +389,13 @@ Return Value:
 
 --*/
 {
-	UNREFERENCED_PARAMETER(Queue);
+  UNREFERENCED_PARAMETER(Queue);
 
-	if (ActionFlags & WdfRequestStopActionSuspend) {
-		WdfRequestStopAcknowledge(Request, FALSE); // Don't requeue
-	} else if (ActionFlags & WdfRequestStopActionPurge) {
-		WdfRequestCancelSentRequest(Request);
-	}
-
-	return;
+  if (ActionFlags & WdfRequestStopActionSuspend) {
+    WdfRequestStopAcknowledge(Request, FALSE); // Don't requeue
+  } else if (ActionFlags & WdfRequestStopActionPurge) {
+    WdfRequestCancelSentRequest(Request);
+  }
 }
 
 NTSTATUS

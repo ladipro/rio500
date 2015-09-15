@@ -215,17 +215,17 @@ Return Value:
   //
   WDF_IO_QUEUE_CONFIG_INIT(&ioQueueConfig, WdfIoQueueDispatchManual);
     
-	WDF_OBJECT_ATTRIBUTES_INIT(&attributes);
-	attributes.SynchronizationScope = WdfSynchronizationScopeQueue;
+  WDF_OBJECT_ATTRIBUTES_INIT(&attributes);
+  attributes.SynchronizationScope = WdfSynchronizationScopeQueue;
      
-	ioQueueConfig.EvtIoStop = Rio500_EvtIoStop;
+  ioQueueConfig.EvtIoStop = Rio500_EvtIoStop;
     
-	WDF_IO_QUEUE_CONFIG_INIT(&ioQueueConfig, WdfIoQueueDispatchManual);
+  WDF_IO_QUEUE_CONFIG_INIT(&ioQueueConfig, WdfIoQueueDispatchManual);
     
-	WDF_OBJECT_ATTRIBUTES_INIT(&attributes);
-	attributes.SynchronizationScope = WdfSynchronizationScopeQueue;
+  WDF_OBJECT_ATTRIBUTES_INIT(&attributes);
+  attributes.SynchronizationScope = WdfSynchronizationScopeQueue;
      
-	ioQueueConfig.EvtIoStop = Rio500_EvtIoStop;
+  ioQueueConfig.EvtIoStop = Rio500_EvtIoStop;
      
   //
   // Register a device interface so that app can find our device and talk to it.
@@ -778,7 +778,7 @@ Return Value:
 --*/
 {
   WDFDEVICE device;
-  PDEVICE_CONTEXT	pDevContext;
+  PDEVICE_CONTEXT  pDevContext;
 
   PAGED_CODE();
 

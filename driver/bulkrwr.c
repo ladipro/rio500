@@ -96,7 +96,7 @@ Return Value:
   // Get the pipe associate with this request.
   //
   if (RequestType == WdfRequestTypeWrite) {
-	  pipe = deviceContext->WritePipe;
+    pipe = deviceContext->WritePipe;
   } else {
     pipe = deviceContext->ReadPipe;
   }
@@ -177,7 +177,7 @@ Return Value:
 
   status = WdfUsbTargetDeviceCreateUrb(
     deviceContext->WdfUsbTargetDevice,
-		&objectAttribs,
+    &objectAttribs,
     &urbMemory,
     &urb
   );
@@ -226,13 +226,12 @@ Return Value:
 Exit:
   if (!NT_SUCCESS(status)) {
     WdfRequestCompleteWithInformation(Request, status, 0);
-    if (newMdl != NULL)	{
+    if (newMdl != NULL)  {
       IoFreeMdl(newMdl);
     }
   }
 
   Rio500_DbgPrint(3, ("Rio500_DispatchReadWrite - ends\n"));
-  return;
 }
 
 VOID
@@ -407,7 +406,6 @@ End:
   Rio500_DbgPrint(3, ("%s request completed with status 0x%x\n", operation, status));
 
   WdfRequestComplete(Request, status);
-  return;
 }
 
 VOID
@@ -433,7 +431,6 @@ Rio500_EvtReadWriteWorkItem(
   }
 
   WdfObjectDelete(WorkItem);
-  return;
 }
 
 NTSTATUS
@@ -502,5 +499,4 @@ DbgPrintRWContext(
   Rio500_DbgPrint(3, ("rwContext->Length          = %d\n", rwContext->Length));
   Rio500_DbgPrint(3, ("rwContext->Numxfer         = %d\n", rwContext->Numxfer));
   Rio500_DbgPrint(3, ("rwContext->VirtualAddress  = %p\n", (PVOID)rwContext->VirtualAddress));
-  return;
 }
