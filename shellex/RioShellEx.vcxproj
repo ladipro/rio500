@@ -228,6 +228,7 @@ exit /B 0
     <ClCompile Include="..\..\..\Rio500Remix\Rio500Remix_i.c" />
     <ClCompile Include="ContextMenu.cpp" />
     <ClCompile Include="Dll.cpp" />
+    <ClCompile Include="IconProvider.cpp" />
     <ClCompile Include="RioShellEx.cpp" />
     <ClCompile Include="fvcommands.cpp" />
     <ClCompile Include="Utils.cpp" />
@@ -239,6 +240,7 @@ exit /B 0
   <ItemGroup>
     <ClInclude Include="fvcommands.h" />
     <ClInclude Include="Guid.h" />
+    <ClInclude Include="IconProvider.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="WorkerWindow.h" />

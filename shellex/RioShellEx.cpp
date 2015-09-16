@@ -22,6 +22,7 @@
 #include "Guid.h"
 #include "fvcommands.h"
 #include "WorkerWindow.h"
+#include "IconProvider.h"
 
 const int g_nMaxLevel = 5;
 
@@ -616,7 +617,7 @@ HRESULT CFolderViewImplFolder::GetAttributesOf(UINT cidl, PCUITEMID_CHILD_ARRAY 
     }
     else if (0 == cidl) {
       *rgfInOut = g_bRioConnected ?
-        SFGAO_FOLDER | SFGAO_HASSUBFOLDER | /*SFGAO_GHOSTED |*/ SFGAO_REMOVABLE | SFGAO_DROPTARGET :
+        SFGAO_FOLDER | SFGAO_HASSUBFOLDER | SFGAO_REMOVABLE | SFGAO_DROPTARGET :
         /*SFGAO_FOLDER | SFGAO_HASSUBFOLDER |*/ SFGAO_GHOSTED | SFGAO_REMOVABLE | SFGAO_DROPTARGET | SFGAO_NONENUMERATED;
       hr = S_OK;
     }
@@ -650,9 +651,32 @@ HRESULT CFolderViewImplFolder::GetUIObjectOf(HWND hwnd, UINT cidl, PCUITEMID_CHI
             hr = _GetFolderness(apidl[0], &fIsFolder);
             if (SUCCEEDED(hr))
             {
-                // This refers to icon indices in shell32.  You can also supply custom icons or
-                // register IExtractImage to support general images.
-                hr = pdxi->SetNormalIcon(L"shell32.dll", fIsFolder ? 4 : 1);
+                if (fIsFolder)
+                {
+                    hr = pdxi->SetNormalIcon(L"shell32.dll", 4);
+                }
+                else
+                {
+                    PWSTR wszName;
+                    hr = _GetName(apidl[0], &wszName);
+                    if (SUCCEEDED(hr))
+                    {
+                        IconProvider iconProvider;
+                        WCHAR wszIconPath[_MAX_PATH];
+                        int iIcon;
+                        hr = iconProvider.GetIconForFileName(wszName, wszIconPath, _MAX_PATH, &iIcon);
+                        if (SUCCEEDED(hr))
+                        {
+                            hr = pdxi->SetNormalIcon(wszIconPath, iIcon);
+                        }
+                        CoTaskMemFree(wszName);
+                    }
+                    if (FAILED(hr))
+                    {
+                        // Fallback to a default system icon
+                        hr = pdxi->SetNormalIcon(L"shell32.dll", 1);
+                    }
+                }
             }
             if (SUCCEEDED(hr))
             {

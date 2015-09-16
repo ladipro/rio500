@@ -221,7 +221,7 @@ STDAPI DllRegisterServer()
 
     WCHAR szDefaultIcon[MAX_PATH];
     StrCpy(szDefaultIcon, szModulePathAndName);
-    StrCat(szDefaultIcon, L",-14");
+    StrCat(szDefaultIcon, L",-145");
     
     // two CLSID in registry path - doesn't quite fit the table below
     WCHAR szRootContextMenuHandlers[MAX_PATH];
@@ -233,7 +233,7 @@ STDAPI DllRegisterServer()
 
 
     // This will setup and register the basic ClassIDs.
-    DWORD dwData = SFGAO_FOLDER | SFGAO_HASSUBFOLDER | /*SFGAO_GHOSTED |*/ SFGAO_REMOVABLE | SFGAO_DROPTARGET | SFGAO_NONENUMERATED;
+    DWORD dwData = SFGAO_FOLDER | SFGAO_HASSUBFOLDER | SFGAO_GHOSTED | SFGAO_REMOVABLE | SFGAO_DROPTARGET;
     REGSTRUCT rgRegEntries[] =
     {
         HKEY_CURRENT_USER,   L"Software\\Classes\\CLSID\\%s",                  szFolderViewImplClassID, NULL,                   (LPBYTE)g_szExtTitle,            REG_SZ,
